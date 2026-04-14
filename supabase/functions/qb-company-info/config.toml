@@ -1,0 +1,2 @@
+[functions.qb-company-info]
+verify_jwt = false

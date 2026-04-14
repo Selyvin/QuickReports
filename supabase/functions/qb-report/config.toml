@@ -1,0 +1,2 @@
+[functions.qb-report]
+verify_jwt = false

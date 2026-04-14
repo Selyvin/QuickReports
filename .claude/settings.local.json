@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:developer.intuit.com)",
+      "WebSearch",
+      "Bash(find /Users/maksimlaaf/Documents/GitHub/QuickReports/frontend/src/components -type f \\\\\\(-name *.vue -o -name *.ts -o -name *.tsx \\\\\\))",
+      "Bash(npx vue-tsc:*)",
+      "Bash(npx vite:*)",
+      "WebFetch(domain:evergreenaccountingservices.com)",
+      "WebFetch(domain:www.firmofthefuture.com)",
+      "Bash(find /Users/maksimlaaf/Documents/GitHub/QuickReports -type f -name *wage* -o -type f -name *payroll*)",
+      "Bash(find /Users/maksimlaaf/Documents/GitHub/QuickReports/frontend/src -type f \\\\\\(-name *.ts -o -name *.js \\\\\\))",
+      "Bash(find /Users/maksimlaaf/Documents/GitHub/QuickReports/frontend/src -type f -name *.ts)",
+      "Bash(npx tsc:*)",
+      "Bash(grep -l \"router-link\" /Users/maksimlaaf/Documents/GitHub/QuickReports/frontend/src/views/*.vue)"
+    ],
+    "additionalDirectories": [
+      "/Users/maksimlaaf/Documents/GitHub/QuickReports/supabase/functions",
+      "/Users/maksimlaaf/Documents/GitHub/QuickReports"
+    ]
+  }
+}

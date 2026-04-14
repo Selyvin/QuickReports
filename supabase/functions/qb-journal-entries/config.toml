@@ -1,0 +1,2 @@
+[functions.qb-journal-entries]
+verify_jwt = false
