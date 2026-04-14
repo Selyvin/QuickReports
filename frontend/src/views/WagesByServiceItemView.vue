@@ -43,22 +43,6 @@ interface PayrollLine {
   amount: number
 }
 
-interface Paycheck {
-  jeId: string
-  payDate: string
-  amount: number
-}
-
-interface EmployeeSummary {
-  employeeName: string
-  calculatedWages: number
-  hasMissingRate: boolean
-  paychecks: Paycheck[]
-  actualWages: number
-  difference: number // calculatedWages - actualWages
-  hasActual: boolean
-}
-
 // ── State ────────────────────────────────────────────────────────────────────
 
 const startDate = ref('')
