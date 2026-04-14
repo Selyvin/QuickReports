@@ -309,52 +309,6 @@ const rateEntriesGrouped = computed(() => {
 const hasDirtyRates = computed(() => rateEntries.value.some((e) => e.dirty))
 const hasMissingRates = computed(() => activities.value.some((a) => a.missingRate))
 
-const employeeSummaries = computed<EmployeeSummary[]>(() => {
-  if (!activities.value.length) return []
-
-  // Calculated wages and missing-rate flag per employee (across all service items)
-  const calcWages = new Map<string, number>()
-  const missingRateFlag = new Map<string, boolean>()
-  for (const a of activities.value) {
-    calcWages.set(a.employeeName, (calcWages.get(a.employeeName) ?? 0) + (a.missingRate ? 0 : a.grossWages))
-    if (a.missingRate) missingRateFlag.set(a.employeeName, true)
-  }
-
-  // Group payroll lines by employee → list of paychecks (one per JE id)
-  const paychecksByEmployee = new Map<string, Map<string, Paycheck>>()
-  for (const line of journalLines.value) {
-    if (!paychecksByEmployee.has(line.employeeName)) {
-      paychecksByEmployee.set(line.employeeName, new Map())
-    }
-    const byJe = paychecksByEmployee.get(line.employeeName)!
-    const existing = byJe.get(line.jeId)
-    if (existing) {
-      existing.amount += line.amount
-    } else {
-      byJe.set(line.jeId, { jeId: line.jeId, payDate: line.payDate, amount: line.amount })
-    }
-  }
-
-  // Build one summary per employee that appears in the time activities
-  const employeeNames = [...new Set(activities.value.map((a) => a.employeeName))].sort()
-  return employeeNames.map((name) => {
-    const calculatedWages = calcWages.get(name) ?? 0
-    const paychecks = paychecksByEmployee.has(name)
-      ? [...paychecksByEmployee.get(name)!.values()].sort((a, b) => a.payDate.localeCompare(b.payDate))
-      : []
-    const actualWages = paychecks.reduce((s, p) => s + p.amount, 0)
-    return {
-      employeeName: name,
-      calculatedWages,
-      hasMissingRate: missingRateFlag.get(name) ?? false,
-      paychecks,
-      actualWages,
-      difference: calculatedWages - actualWages,
-      hasActual: paychecks.length > 0,
-    }
-  })
-})
-
 // ── Formatting ────────────────────────────────────────────────────────────────
 
 function fmtDuration(decimalHours: number) {
@@ -372,12 +326,6 @@ function fmtDate(d: string) {
   if (!d) return ''
   const [, month, day] = d.split('-')
   return `${month}/${day}`
-}
-
-function fmtPayDate(d: string) {
-  if (!d) return ''
-  const [year, month, day] = d.split('-')
-  return `${month}/${day}/${(year ?? '').slice(2)}`
 }
 
 // ── Export CSV ────────────────────────────────────────────────────────────────
