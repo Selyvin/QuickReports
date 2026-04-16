@@ -2,6 +2,7 @@
 import { ref, computed, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
+import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
 
@@ -529,52 +530,7 @@ function printReport() {
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="border-b border-gray-200 bg-white px-6 py-4 no-print">
-      <div class="mx-auto max-w-7xl flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600">
-            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </div>
-          <div>
-            <h1 class="text-lg font-semibold text-gray-900">QuickReports</h1>
-            <p class="text-xs text-gray-500">QuickBooks Financial Dashboard</p>
-          </div>
-          <nav class="ml-6 flex items-center gap-1">
-            <router-link to="/"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Dashboard
-            </router-link>
-            <router-link to="/reports"
-              class="rounded-md px-3 py-1.5 text-sm font-medium bg-indigo-50 text-indigo-700 transition">
-              Reports
-            </router-link>
-            <router-link to="/estimates"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Estimates
-            </router-link>
-            <router-link to="/wages"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Wages
-            </router-link>
-            <router-link to="/invoice-payments"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Invoice Payments
-            </router-link>
-            <router-link to="/create-bill"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Create Bill
-            </router-link>
-            <router-link to="/company"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Company
-            </router-link>
-          </nav>
-        </div>
-      </div>
-    </header>
+    <AppHeader class="no-print" />
 
     <div class="mx-auto max-w-7xl px-6 py-8 flex gap-6">
       <!-- Sidebar: report picker -->
@@ -589,7 +545,7 @@ function printReport() {
             v-model="search"
             type="text"
             placeholder="Search reports…"
-            class="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
+            class="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
           />
         </div>
 
@@ -600,8 +556,8 @@ function printReport() {
             :key="cat"
             class="rounded-full px-2.5 py-0.5 text-xs font-medium transition"
             :class="selectedCategory === cat
-              ? 'bg-indigo-600 text-white'
-              : 'bg-white border border-gray-200 text-gray-600 hover:border-indigo-300'"
+              ? 'bg-green-600 text-white'
+              : 'bg-white border border-gray-200 text-gray-600 hover:border-green-300'"
             @click="selectedCategory = selectedCategory === cat ? null : cat"
           >
             {{ cat }}
@@ -616,12 +572,12 @@ function printReport() {
               :key="r.id"
               class="w-full px-4 py-2.5 text-left text-sm transition"
               :class="selectedReport?.id === r.id
-                ? 'bg-indigo-50 text-indigo-700 font-medium'
+                ? 'bg-green-50 text-green-700 font-medium'
                 : 'text-gray-700 hover:bg-gray-50'"
               @click="selectReport(r)"
             >
               {{ r.name }}
-              <span class="block text-xs font-normal" :class="selectedReport?.id === r.id ? 'text-indigo-400' : 'text-gray-400'">
+              <span class="block text-xs font-normal" :class="selectedReport?.id === r.id ? 'text-green-400' : 'text-gray-400'">
                 {{ r.category }}
               </span>
             </button>

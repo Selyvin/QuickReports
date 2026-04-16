@@ -16,7 +16,12 @@
       "Bash(find /Users/maksimlaaf/Documents/GitHub/QuickReports/frontend/src -type f \\\\\\(-name *.ts -o -name *.js \\\\\\))",
       "Bash(find /Users/maksimlaaf/Documents/GitHub/QuickReports/frontend/src -type f -name *.ts)",
       "Bash(npx tsc:*)",
-      "Bash(grep -l \"router-link\" /Users/maksimlaaf/Documents/GitHub/QuickReports/frontend/src/views/*.vue)"
+      "Bash(grep -l \"router-link\" /Users/maksimlaaf/Documents/GitHub/QuickReports/frontend/src/views/*.vue)",
+      "Bash(grep -l \"getValidToken\\\\|qb-token\" /Users/maksimlaaf/Documents/GitHub/QuickReports/supabase/functions/*/index.ts)",
+      "Bash(grep -n \"import.*qb-token\\\\|Inline.*qb-token\\\\|getValidToken\" /Users/maksimlaaf/Documents/GitHub/QuickReports/supabase/functions/*/index.ts)",
+      "Read(//Users/maksimlaaf/.claude/**)",
+      "mcp__supabase__list_projects",
+      "mcp__supabase__deploy_edge_function"
     ],
     "additionalDirectories": [
       "/Users/maksimlaaf/Documents/GitHub/QuickReports/supabase/functions",

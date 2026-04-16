@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
+import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
 
@@ -135,52 +136,7 @@ function toggleLines(id: string) {
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="border-b border-gray-200 bg-white px-6 py-4">
-      <div class="mx-auto max-w-7xl flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600">
-            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </div>
-          <div>
-            <h1 class="text-lg font-semibold text-gray-900">QuickReports</h1>
-            <p class="text-xs text-gray-500">QuickBooks Financial Dashboard</p>
-          </div>
-          <nav class="ml-6 flex items-center gap-1">
-            <router-link to="/"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Dashboard
-            </router-link>
-            <router-link to="/reports"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Reports
-            </router-link>
-            <router-link to="/estimates"
-              class="rounded-md px-3 py-1.5 text-sm font-medium bg-indigo-50 text-indigo-700 transition">
-              Estimates
-            </router-link>
-            <router-link to="/wages"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Wages
-            </router-link>
-            <router-link to="/invoice-payments"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Invoice Payments
-            </router-link>
-            <router-link to="/create-bill"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Create Bill
-            </router-link>
-            <router-link to="/company"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Company
-            </router-link>
-          </nav>
-        </div>
-      </div>
-    </header>
+    <AppHeader />
 
     <!-- Content -->
     <div class="mx-auto max-w-7xl px-6 py-8 space-y-6">
@@ -192,7 +148,7 @@ function toggleLines(id: string) {
         </div>
         <button
           :disabled="loading"
-          class="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60"
+          class="flex items-center gap-2 rounded-lg bg-green-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 disabled:opacity-60"
           @click="fetchEstimates"
         >
           <svg v-if="loading" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -238,7 +194,7 @@ function toggleLines(id: string) {
           v-model="search"
           type="text"
           placeholder="Search by customer or estimate #…"
-          class="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
+          class="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
         />
       </div>
 
@@ -285,7 +241,7 @@ function toggleLines(id: string) {
                 <div class="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
                   <div
                     class="h-full rounded-full transition-all"
-                    :class="pct(est.invoicedTotal, est.estimateTotal) === 100 ? 'bg-emerald-500' : 'bg-indigo-500'"
+                    :class="pct(est.invoicedTotal, est.estimateTotal) === 100 ? 'bg-emerald-500' : 'bg-green-500'"
                     :style="{ width: pct(est.invoicedTotal, est.estimateTotal) + '%' }"
                   />
                 </div>
@@ -347,7 +303,7 @@ function toggleLines(id: string) {
             <!-- Line item progress toggle -->
             <div class="border-t border-gray-100 px-5 py-3">
               <button
-                class="text-xs font-medium text-indigo-600 hover:text-indigo-800 transition"
+                class="text-xs font-medium text-green-600 hover:text-green-800 transition"
                 @click.stop="toggleLines(est.estimateId)"
               >
                 {{ showLines === est.estimateId ? 'Hide' : 'Show' }} line item breakdown
@@ -383,7 +339,7 @@ function toggleLines(id: string) {
                           <div class="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
                             <div
                               class="h-full rounded-full"
-                              :class="pct(line.invoiced, line.estimated) === 100 ? 'bg-emerald-500' : 'bg-indigo-500'"
+                              :class="pct(line.invoiced, line.estimated) === 100 ? 'bg-emerald-500' : 'bg-green-500'"
                               :style="{ width: pct(line.invoiced, line.estimated) + '%' }"
                             />
                           </div>

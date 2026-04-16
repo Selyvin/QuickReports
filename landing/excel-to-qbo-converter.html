@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel to QBO Converter — Free Online Tool</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #1a2433;
+  --navy-dark: #111827;
+  --navy-mid: #243044;
+  --navy-light: #2e3c52;
+  --blue: #3b82f6;
+  --blue-hover: #2563eb;
+  --green: #22c55e;
+  --red: #ef4444;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-mid: #475569;
+  --text-light: #94a3b8;
+  --surface: #ffffff;
+  --bg: #f1f5f9;
+  --s-text: #cbd5e1;
+  --s-dim: #64748b;
+}
+
+html { font-family: 'Inter', system-ui, sans-serif; font-size: 14px; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+/* NAV */
+nav {
+  background: var(--navy-dark);
+  padding: 0 32px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.nav-brand { display: flex; align-items: center; gap: 9px; color: #fff; font-weight: 700; font-size: 15px; text-decoration: none; }
+.nav-logo { width: 28px; height: 28px; background: var(--blue); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+.nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
+.nav-links a { color: var(--s-text); text-decoration: none; font-size: 13px; font-weight: 500; transition: color .15s; }
+.nav-links a:hover { color: #fff; }
+.nav-cta { background: var(--blue) !important; color: #fff !important; padding: 6px 15px; border-radius: 6px; font-weight: 600 !important; }
+.nav-cta:hover { background: var(--blue-hover) !important; }
+
+/* HERO */
+.hero { background: var(--navy); padding: 36px 32px 30px; text-align: center; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); border-radius: 20px; padding: 4px 13px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 14px; }
+.hero h1 { color: #fff; font-size: clamp(20px, 3vw, 30px); font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
+.hero p { color: var(--s-text); font-size: 14px; max-width: 500px; margin: 0 auto 20px; line-height: 1.6; }
+.trust-row { display: flex; align-items: center; justify-content: center; gap: 22px; flex-wrap: wrap; }
+.trust-item { display: flex; align-items: center; gap: 6px; color: var(--s-text); font-size: 12px; font-weight: 500; }
+
+/* LAYOUT */
+.main { display: flex; flex: 1; max-width: 1080px; width: 100%; margin: 28px auto; padding: 0 20px; gap: 20px; align-items: flex-start; }
+
+/* SIDEBAR */
+.sidebar { width: 230px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+.sc { background: var(--navy); border-radius: 10px; padding: 18px; border: 1px solid rgba(255,255,255,0.05); }
+.sc-title { color: var(--s-text); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 13px; }
+.s-steps { display: flex; flex-direction: column; gap: 12px; }
+.s-step { display: flex; align-items: flex-start; gap: 10px; }
+.s-num { width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.s-text { color: var(--s-text); font-size: 12px; line-height: 1.5; }
+.s-feats { display: flex; flex-direction: column; gap: 10px; }
+.s-feat { display: flex; align-items: flex-start; gap: 9px; }
+.s-ficon { width: 26px; height: 26px; border-radius: 7px; background: rgba(59,130,246,.12); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.s-flabel strong { display: block; color: #e2e8f0; font-size: 12px; font-weight: 600; margin-bottom: 1px; }
+.s-flabel span { color: var(--s-dim); font-size: 11px; }
+.import-note { color: var(--s-text); font-size: 12px; line-height: 1.7; }
+.import-note b { color: #e2e8f0; }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stat-box { background: var(--navy-mid); border-radius: 7px; padding: 11px 8px; text-align: center; border: 1px solid rgba(255,255,255,0.04); }
+.stat-num { color: var(--blue); font-size: 17px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.stat-lbl { color: var(--s-dim); font-size: 10px; line-height: 1.3; }
+
+/* PANELS */
+.converter { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+.panel-head { padding: 14px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 11px; }
+.p-badge { width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.panel-head h2 { font-size: 14px; font-weight: 700; color: var(--text); }
+.panel-head p { font-size: 12px; color: var(--text-mid); margin-top: 1px; }
+.panel-body { padding: 22px; }
+
+/* DROPZONE */
+.dropzone { border: 2px dashed #cbd5e1; border-radius: 9px; padding: 36px 20px; text-align: center; cursor: pointer; position: relative; background: #f8fafc; transition: border-color .2s, background .2s; }
+.dropzone:hover, .dropzone.dragover { border-color: var(--blue); background: #eff6ff; }
+.dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.di-wrap { width: 52px; height: 52px; border-radius: 13px; background: #dbeafe; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 12px; }
+.dp { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.dp span { color: var(--blue); }
+.ds { font-size: 12px; color: var(--text-light); margin-bottom: 10px; }
+.fmt-row { display: flex; justify-content: center; gap: 5px; }
+.fmt { background: #e2e8f0; color: #475569; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: .04em; }
+
+/* FIELDS */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+label { font-size: 12px; font-weight: 600; color: var(--text-mid); }
+.req { color: var(--red); }
+select, input[type="text"] { width: 100%; background: #fff; border: 1px solid #d1d5db; border-radius: 6px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 11px; outline: none; appearance: none; transition: border-color .15s, box-shadow .15s; }
+select:focus, input[type="text"]:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+.slabel { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); margin-bottom: 11px; margin-top: 2px; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+/* TABLE */
+.preview-wrap { border: 1px solid var(--border); border-radius: 7px; overflow: hidden; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th { padding: 8px 13px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-mid); background: #f1f5f9; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 8px 13px; border-bottom: 1px solid #f1f5f9; color: var(--text); white-space: nowrap; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: #f8fafc; }
+.amt-pos { color: #16a34a; font-weight: 600; }
+.amt-neg { color: var(--red); font-weight: 600; }
+
+/* BUTTON */
+.btn-convert { width: 100%; padding: 13px 24px; border: none; border-radius: 7px; background: var(--navy); color: #fff; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background .15s, transform .1s, box-shadow .15s; box-shadow: 0 2px 8px rgba(17,24,39,.18); }
+.btn-convert:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(17,24,39,.22); }
+.btn-convert:active { transform: translateY(0); }
+.btn-notes { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 11px; flex-wrap: wrap; }
+.btn-note { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-light); }
+
+/* STATUS */
+.status { display: none; padding: 10px 13px; border-radius: 6px; font-size: 13px; font-weight: 500; margin-top: 11px; line-height: 1.4; }
+.status.success { display: block; background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+.status.error { display: block; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+
+/* FOOTER */
+footer { background: var(--navy-dark); padding: 22px 32px; text-align: center; color: var(--s-dim); font-size: 12px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.04); }
+.footer-links { display: flex; justify-content: center; gap: 18px; margin-bottom: 8px; flex-wrap: wrap; }
+footer a { color: var(--s-text); text-decoration: none; }
+footer a:hover { color: #fff; }
+
+.hidden { display: none !important; }
+
+@media (max-width: 760px) {
+  .main { flex-direction: column; }
+  .sidebar { width: 100%; }
+  .g2 { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-logo">⚡</div>
+    Excel to QBO
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">CSV to QBO</a></li>
+    <li><a href="#">QBO Viewer</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#" class="nav-cta">Free Tool</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge"><span>✓</span> Free · No signup · Runs in your browser</div>
+  <h1>Convert Excel to QBO for QuickBooks</h1>
+  <p>Upload your bank transaction spreadsheet and get a valid QuickBooks Web Connect file instantly. Your data never leaves your device.</p>
+  <div class="trust-row">
+    <div class="trust-item">🔒 256-bit secure</div>
+    <div class="trust-item">⚡ Instant conversion</div>
+    <div class="trust-item">💻 Works offline</div>
+    <div class="trust-item">🆓 Always free</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <aside class="sidebar">
+    <div class="sc">
+      <div class="sc-title">How it works</div>
+      <div class="s-steps">
+        <div class="s-step"><div class="s-num">1</div><div class="s-text">Upload your Excel or CSV with transaction rows</div></div>
+        <div class="s-step"><div class="s-num">2</div><div class="s-text">Map your date, amount &amp; description columns</div></div>
+        <div class="s-step"><div class="s-num">3</div><div class="s-text">Download .QBO and import into QuickBooks</div></div>
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="sc-title">Why use this</div>
+      <div class="s-feats">
+        <div class="s-feat"><div class="s-ficon">🔒</div><div class="s-flabel"><strong>100% Private</strong><span>Never uploaded anywhere</span></div></div>
+        <div class="s-feat"><div class="s-ficon">✅</div><div class="s-flabel"><strong>QB Compatible</strong><span>Valid OFX Web Connect</span></div></div>
+        <div class="s-feat"><div class="s-ficon">⚙️</div><div class="s-flabel"><strong>Auto-detect</strong><span>Smart column mapping</span></div></div>
+        <div class="s-feat"><div class="s-ficon">👁</div><div class="s-flabel"><strong>Preview first</strong><span>Verify before converting</span></div></div>
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="sc-title">Import into QuickBooks</div>
+      <div class="import-note">
+        <b>Desktop:</b><br>File → Utilities → Import → Web Connect File<br><br>
+        <b>Online:</b><br>Banking → Upload transactions → .qbo file
+      </div>
+    </div>
+
+    <div class="sc">
+      <div class="sc-title">At a glance</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-num">Free</div><div class="stat-lbl">No cost ever</div></div>
+        <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">Server uploads</div></div>
+        <div class="stat-box"><div class="stat-num">XLS</div><div class="stat-lbl">Excel files</div></div>
+        <div class="stat-box"><div class="stat-num">CSV</div><div class="stat-lbl">Also supported</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="converter">
+
+    <!-- Step 1 -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="p-badge">1</div>
+        <div><h2>Upload your file</h2><p>Excel (.xlsx, .xls) or CSV — any spreadsheet with transaction rows</p></div>
+      </div>
+      <div class="panel-body">
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
+          <div class="di-wrap">📂</div>
+          <div class="dp"><span>Click to browse</span> or drag &amp; drop your file</div>
+          <div class="ds">Maximum file size: 50MB</div>
+          <div class="fmt-row"><span class="fmt">XLSX</span><span class="fmt">XLS</span><span class="fmt">CSV</span></div>
+        </div>
+        <div id="fileStatus" class="status"></div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="panel hidden" id="mappingCard">
+      <div class="panel-head">
+        <div class="p-badge">2</div>
+        <div><h2>Map your columns</h2><p>Tell us which columns hold the date, amount, and description</p></div>
+      </div>
+      <div class="panel-body">
+        <div class="slabel">Column mapping</div>
+        <div class="g2">
+          <div class="field"><label>Date <span class="req">*</span></label><select id="mapDate"></select></div>
+          <div class="field"><label>Amount <span class="req">*</span></label><select id="mapAmount"></select></div>
+          <div class="field"><label>Description / Payee</label><select id="mapDesc"></select></div>
+          <div class="field"><label>Memo <span style="font-weight:400;color:var(--text-light)">(optional)</span></label><select id="mapMemo"></select></div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="slabel">Account details</div>
+        <div class="g2">
+          <div class="field"><label>Bank routing number</label><input type="text" id="bankId" value="000000000" placeholder="e.g. 021000021" /></div>
+          <div class="field"><label>Account number</label><input type="text" id="acctId" value="0000000000" placeholder="e.g. 123456789" /></div>
+          <div class="field">
+            <label>Account type</label>
+            <select id="acctType">
+              <option value="CHECKING">Checking</option>
+              <option value="SAVINGS">Savings</option>
+              <option value="CREDITLINE">Credit Card</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Currency</label>
+            <select id="currency">
+              <option value="USD">USD — US Dollar</option>
+              <option value="CAD">CAD — Canadian Dollar</option>
+              <option value="EUR">EUR — Euro</option>
+              <option value="GBP">GBP — British Pound</option>
+              <option value="AUD">AUD — Australian Dollar</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="slabel">Data preview <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-light)">(first 5 rows)</span></div>
+        <div class="preview-wrap"><table id="previewTable"></table></div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="panel hidden" id="convertCard">
+      <div class="panel-head">
+        <div class="p-badge">3</div>
+        <div><h2>Convert &amp; download</h2><p>Your .QBO file will be generated and saved to your device</p></div>
+      </div>
+      <div class="panel-body">
+        <button class="btn-convert" onclick="convertAndDownload()">⬇ Download .QBO File</button>
+        <div class="btn-notes">
+          <div class="btn-note">🔒 File never leaves your browser</div>
+          <div class="btn-note">✅ Valid QuickBooks Web Connect format</div>
+        </div>
+        <div id="convertStatus" class="status"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="#">Home</a>
+    <a href="#">CSV to QBO</a>
+    <a href="#">QBO to Excel</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Use</a>
+    <a href="#">Contact</a>
+  </div>
+  <div>© 2026 Excel to QBO Converter · Free browser tool · Not affiliated with Intuit or QuickBooks®</div>
+</footer>
+
+<script>
+  let parsedRows = [], headers = [];
+
+  const dz = document.getElementById('dropzone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+  document.getElementById('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
+
+  function handleFile(file) {
+    if (!file) return;
+    const status = document.getElementById('fileStatus');
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        if (data.length < 2) throw new Error('File has no data rows.');
+        headers = data[0].map(h => String(h).trim());
+        parsedRows = data.slice(1).filter(r => r.some(c => c !== ''));
+        status.className = 'status success';
+        status.textContent = `✓ Loaded "${file.name}" — ${parsedRows.length} transactions found across ${headers.length} columns.`;
+        populateSelects(); buildPreview();
+        document.getElementById('mappingCard').classList.remove('hidden');
+        document.getElementById('convertCard').classList.remove('hidden');
+      } catch(err) {
+        status.className = 'status error';
+        status.textContent = '✗ ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function populateSelects() {
+    ['mapDate','mapAmount','mapDesc','mapMemo'].forEach(id => {
+      const sel = document.getElementById(id);
+      sel.innerHTML = '<option value="">— select column —</option>';
+      headers.forEach((h, i) => { const o = document.createElement('option'); o.value = i; o.textContent = h || `Column ${i+1}`; sel.appendChild(o); });
+    });
+    headers.forEach((h, i) => {
+      const hl = h.toLowerCase();
+      if (/date|dt|posted/.test(hl)) document.getElementById('mapDate').value = i;
+      if (/amount|amt|debit|credit|sum/.test(hl)) document.getElementById('mapAmount').value = i;
+      if (/desc|payee|name|merchant|memo|narr/.test(hl)) {
+        if (!document.getElementById('mapDesc').value) document.getElementById('mapDesc').value = i;
+        else if (!document.getElementById('mapMemo').value) document.getElementById('mapMemo').value = i;
+      }
+    });
+    ['mapDate','mapAmount','mapDesc','mapMemo'].forEach(id => document.getElementById(id).addEventListener('change', buildPreview));
+  }
+
+  function getCellValue(row, idx) { if (idx === '' || idx === undefined) return ''; return row[parseInt(idx)] ?? ''; }
+
+  function parseDate(raw) {
+    if (!raw) return null;
+    if (raw instanceof Date) return raw;
+    if (typeof raw === 'number') { const d = new Date(Math.round((raw - 25569) * 86400 * 1000)); if (!isNaN(d)) return d; }
+    const d = new Date(raw); return isNaN(d) ? null : d;
+  }
+
+  function fmt(d) { if (!d) return '19000101'; const p = n => String(n).padStart(2,'0'); return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`; }
+
+  function buildPreview() {
+    const dI = document.getElementById('mapDate').value, aI = document.getElementById('mapAmount').value, nI = document.getElementById('mapDesc').value;
+    let html = '<thead><tr><th>Date</th><th>Amount</th><th>Description</th></tr></thead><tbody>';
+    parsedRows.slice(0,5).forEach(row => {
+      const d = parseDate(getCellValue(row, dI)), amt = parseFloat(String(getCellValue(row, aI)).replace(/[^0-9.\-]/g,'')), desc = getCellValue(row, nI);
+      const cls = isNaN(amt) ? '' : amt >= 0 ? 'amt-pos' : 'amt-neg';
+      html += `<tr><td>${d ? d.toLocaleDateString() : getCellValue(row,dI)}</td><td class="${cls}">${isNaN(amt) ? getCellValue(row,aI) : amt.toFixed(2)}</td><td>${desc || '<span style="color:#94a3b8">—</span>'}</td></tr>`;
+    });
+    document.getElementById('previewTable').innerHTML = html + '</tbody>';
+  }
+
+  function convertAndDownload() {
+    const dI = document.getElementById('mapDate').value, aI = document.getElementById('mapAmount').value;
+    const nI = document.getElementById('mapDesc').value, mI = document.getElementById('mapMemo').value;
+    const status = document.getElementById('convertStatus');
+    if (!dI || !aI) { status.className = 'status error'; status.textContent = '✗ Please map at least the Date and Amount columns.'; return; }
+
+    const bankId = document.getElementById('bankId').value || '000000000';
+    const acctId = document.getElementById('acctId').value || '0000000000';
+    const acctType = document.getElementById('acctType').value;
+    const currency = document.getElementById('currency').value.split(' ')[0];
+
+    const txns = [];
+    parsedRows.forEach((row, idx) => {
+      const d = parseDate(getCellValue(row, dI)), amt = parseFloat(String(getCellValue(row, aI)).replace(/[^0-9.\-]/g,''));
+      if (!d || isNaN(amt)) return;
+      txns.push({ date: d, amt, desc: String(getCellValue(row,nI)||'').trim(), memo: String(getCellValue(row,mI)||'').trim(), fitid: `TXN${String(idx+1).padStart(6,'0')}` });
+    });
+
+    if (!txns.length) { status.className = 'status error'; status.textContent = '✗ No valid rows found. Check column mapping.'; return; }
+
+    const dates = txns.map(t => t.date), minD = new Date(Math.min(...dates)), maxD = new Date(Math.max(...dates)), now = new Date();
+    let qbo = `OFXHEADER:100\nDATA:OFXSGML\nVERSION:102\nSECURITY:NONE\nENCODING:UTF-8\nCHARSET:1252\nCOMPRESSION:NONE\nOLDFILEUID:NONE\nNEWFILEUID:NONE\n\n<OFX>\n<SIGNONMSGSRSV1>\n<SONRS>\n<STATUS>\n<CODE>0</CODE>\n<SEVERITY>INFO</SEVERITY>\n</STATUS>\n<DTSERVER>${fmt(now)}</DTSERVER>\n<LANGUAGE>ENG</LANGUAGE>\n</SONRS>\n</SIGNONMSGSRSV1>\n<BANKMSGSRSV1>\n<STMTTRNRS>\n<TRNUID>1001</TRNUID>\n<STATUS>\n<CODE>0</CODE>\n<SEVERITY>INFO</SEVERITY>\n</STATUS>\n<STMTRS>\n<CURDEF>${currency}</CURDEF>\n<BANKACCTFROM>\n<BANKID>${bankId}</BANKID>\n<ACCTID>${acctId}</ACCTID>\n<ACCTTYPE>${acctType}</ACCTTYPE>\n</BANKACCTFROM>\n<BANKTRANLIST>\n<DTSTART>${fmt(minD)}</DTSTART>\n<DTEND>${fmt(maxD)}</DTEND>\n`;
+
+    txns.forEach(t => {
+      const name = (t.desc||'TRANSACTION').substring(0,32).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      const memo = (t.memo||t.desc||'').substring(0,64).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      qbo += `<STMTTRN>\n<TRNTYPE>${t.amt>=0?'CREDIT':'DEBIT'}</TRNTYPE>\n<DTPOSTED>${fmt(t.date)}</DTPOSTED>\n<TRNAMT>${t.amt.toFixed(2)}</TRNAMT>\n<FITID>${t.fitid}</FITID>\n<n>${name}</n>\n<MEMO>${memo}</MEMO>\n</STMTTRN>\n`;
+    });
+
+    qbo += `</BANKTRANLIST>\n<LEDGERBAL>\n<BALAMT>0.00</BALAMT>\n<DTASOF>${fmt(maxD)}</DTASOF>\n</LEDGERBAL>\n</STMTRS>\n</STMTTRNRS>\n</BANKMSGSRSV1>\n</OFX>`;
+
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([qbo],{type:'application/x-ofx'})), download: `transactions_${fmt(now)}.qbo` });
+    a.click(); URL.revokeObjectURL(a.href);
+    status.className = 'status success';
+    status.textContent = `✓ Done! ${txns.length} transactions exported. Import the .QBO file via QuickBooks → File → Utilities → Import → Web Connect.`;
+  }
+</script>
+</body>
+</html>

@@ -1,52 +1,6 @@
-import { createClient, type SupabaseClient } from 'jsr:@supabase/supabase-js@2'
+import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { corsHeaders } from 'jsr:@supabase/supabase-js@2/cors'
-
-// ── Inline: qb-token ─────────────────────────────────────────────────────────
-const QB_CLIENT_ID = Deno.env.get('INTUIT_CLIENT_ID')!
-const QB_CLIENT_SECRET = Deno.env.get('INTUIT_CLIENT_SECRET')!
-const REFRESH_BUFFER_MS = 5 * 60 * 1000
-
-async function getValidToken(
-  supabase: SupabaseClient,
-  userId: string,
-): Promise<{ access_token: string; realm_id: string }> {
-  const { data: conn, error } = await supabase
-    .from('qb_connections')
-    .select('access_token, refresh_token, token_expires_at, realm_id')
-    .eq('user_id', userId)
-    .single()
-
-  if (error || !conn) throw new Error('No QuickBooks connection found for this user')
-
-  const expiresAt = new Date(conn.token_expires_at).getTime()
-  if (expiresAt - Date.now() >= REFRESH_BUFFER_MS) {
-    return { access_token: conn.access_token, realm_id: conn.realm_id }
-  }
-
-  const res = await fetch('https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Basic ${btoa(`${QB_CLIENT_ID}:${QB_CLIENT_SECRET}`)}`,
-      Accept: 'application/json',
-    },
-    body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: conn.refresh_token }),
-  })
-
-  if (!res.ok) throw new Error(`Token refresh failed: ${res.status} ${await res.text()}`)
-
-  const tokens: { access_token: string; refresh_token: string; expires_in: number } = await res.json()
-  const newExpiresAt = new Date(Date.now() + tokens.expires_in * 1000).toISOString()
-
-  await supabase
-    .from('qb_connections')
-    .update({ access_token: tokens.access_token, refresh_token: tokens.refresh_token, token_expires_at: newExpiresAt })
-    .eq('user_id', userId)
-
-  return { access_token: tokens.access_token, realm_id: conn.realm_id }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
+import { getValidToken } from '../_shared/qb-token.ts'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!

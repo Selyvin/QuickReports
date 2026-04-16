@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
+import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
 
@@ -240,55 +241,11 @@ async function signOut() {
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="border-b border-gray-200 bg-white px-6 py-4">
-      <div class="mx-auto max-w-7xl flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600">
-            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </div>
-          <div>
-            <h1 class="text-lg font-semibold text-gray-900">QuickReports</h1>
-            <p class="text-xs text-gray-500">QuickBooks Financial Dashboard</p>
-          </div>
-          <nav class="ml-6 flex items-center gap-1">
-            <router-link to="/"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Dashboard
-            </router-link>
-            <router-link to="/reports"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Reports
-            </router-link>
-            <router-link to="/estimates"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Estimates
-            </router-link>
-            <router-link to="/wages"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Wages
-            </router-link>
-            <router-link to="/invoice-payments"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Invoice Payments
-            </router-link>
-            <router-link to="/create-bill"
-              class="rounded-md px-3 py-1.5 text-sm font-medium bg-indigo-50 text-indigo-700 transition">
-              Create Bill
-            </router-link>
-            <router-link to="/company"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Company
-            </router-link>
-          </nav>
-        </div>
-        <button class="text-sm text-gray-400 hover:text-gray-600 transition" @click="signOut">
-          Sign out
-        </button>
-      </div>
-    </header>
+    <AppHeader>
+      <button class="text-sm text-gray-400 hover:text-gray-600 transition" @click="signOut">
+        Sign out
+      </button>
+    </AppHeader>
 
     <div class="mx-auto max-w-3xl px-6 py-8 space-y-6">
 
@@ -337,7 +294,7 @@ async function signOut() {
               <label class="text-xs font-medium text-gray-500">Vendor <span class="text-red-500">*</span></label>
               <select
                 v-model="vendorId"
-                class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
                 <option value="" disabled>Select a vendor…</option>
                 <option v-for="v in vendors" :key="v.id" :value="v.id">{{ v.name }}</option>
               </select>
@@ -348,7 +305,7 @@ async function signOut() {
               <input
                 v-model="txnDate"
                 type="date"
-                class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
             </div>
 
             <div class="flex flex-col gap-1">
@@ -356,7 +313,7 @@ async function signOut() {
               <input
                 v-model="dueDate"
                 type="date"
-                class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
             </div>
           </div>
         </div>
@@ -368,7 +325,7 @@ async function signOut() {
             <button
               type="button"
               @click="addLine"
-              class="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-800 transition">
+              class="flex items-center gap-1 text-xs font-medium text-green-600 hover:text-green-800 transition">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
@@ -388,7 +345,7 @@ async function signOut() {
                   type="button"
                   @click="setLineType(line, 'account')"
                   :class="line.lineType === 'account'
-                    ? 'bg-indigo-600 text-white px-3 py-1'
+                    ? 'bg-green-600 text-white px-3 py-1'
                     : 'bg-white text-gray-500 hover:bg-gray-50 px-3 py-1 transition'">
                   Account
                 </button>
@@ -396,7 +353,7 @@ async function signOut() {
                   type="button"
                   @click="setLineType(line, 'item')"
                   :class="line.lineType === 'item'
-                    ? 'bg-indigo-600 text-white px-3 py-1'
+                    ? 'bg-green-600 text-white px-3 py-1'
                     : 'bg-white text-gray-500 hover:bg-gray-50 px-3 py-1 transition'">
                   Product/Service
                 </button>
@@ -423,7 +380,7 @@ async function signOut() {
                   <label class="text-xs font-medium text-gray-500">Account <span class="text-red-500">*</span></label>
                   <select
                     v-model="line.accountId"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
                     <option value="" disabled>Select account…</option>
                     <option v-for="a in accounts" :key="a.id" :value="a.id">{{ a.name }}</option>
                   </select>
@@ -435,7 +392,7 @@ async function signOut() {
                     v-model="line.description"
                     type="text"
                     placeholder="Optional"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                 </div>
 
                 <div class="col-span-12 sm:col-span-2 flex flex-col gap-1">
@@ -446,7 +403,7 @@ async function signOut() {
                     min="0.01"
                     step="0.01"
                     placeholder="0.00"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 tabular-nums" />
+                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 tabular-nums" />
                 </div>
               </div>
             </template>
@@ -462,7 +419,7 @@ async function signOut() {
                     <button
                       type="button"
                       @click="openItemDropdown(i)"
-                      class="w-full flex items-center justify-between border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-left">
+                      class="w-full flex items-center justify-between border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-500 text-left">
                       <span :class="selectedItemLabel(line) ? 'text-gray-900' : 'text-gray-400'">
                         {{ selectedItemLabel(line) || 'Select item…' }}
                       </span>
@@ -490,7 +447,7 @@ async function signOut() {
                           placeholder="Search items…"
                           autofocus
                           @click.stop
-                          class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500" />
                       </div>
 
                       <!-- Options -->
@@ -499,8 +456,8 @@ async function signOut() {
                           v-for="it in filteredItems"
                           :key="it.id"
                           @click="selectItem(line, it)"
-                          class="flex gap-4 px-3 py-2.5 cursor-pointer hover:bg-indigo-50 transition-colors"
-                          :class="line.itemId === it.id ? 'bg-indigo-50' : ''">
+                          class="flex gap-4 px-3 py-2.5 cursor-pointer hover:bg-green-50 transition-colors"
+                          :class="line.itemId === it.id ? 'bg-green-50' : ''">
                           <!-- Left column: name + sku -->
                           <div class="min-w-0 flex-1">
                             <div class="text-sm font-medium text-gray-900 truncate">{{ it.name }}</div>
@@ -527,7 +484,7 @@ async function signOut() {
                     v-model="line.description"
                     type="text"
                     placeholder="Optional"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
                 </div>
 
                 <!-- Qty -->
@@ -539,7 +496,7 @@ async function signOut() {
                     min="0"
                     step="any"
                     placeholder="1"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 tabular-nums" />
+                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 tabular-nums" />
                 </div>
 
                 <!-- Unit Price -->
@@ -551,7 +508,7 @@ async function signOut() {
                     min="0"
                     step="0.01"
                     placeholder="0.00"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 tabular-nums" />
+                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 tabular-nums" />
                 </div>
 
                 <!-- Amount (manual fallback if no qty×price) -->
@@ -573,7 +530,7 @@ async function signOut() {
                     min="0.01"
                     step="0.01"
                     placeholder="0.00"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 tabular-nums" />
+                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 tabular-nums" />
                 </div>
 
                 <!-- Customer/Project -->
@@ -581,7 +538,7 @@ async function signOut() {
                   <label class="text-xs font-medium text-gray-500">Customer/Project <span class="text-gray-400 font-normal">(optional)</span></label>
                   <select
                     v-model="line.customerId"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                    class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
                     <option value="">None</option>
                     <option v-for="c in customers" :key="c.id" :value="c.id">{{ c.name }}</option>
                   </select>
@@ -609,7 +566,7 @@ async function signOut() {
           <button
             type="submit"
             :disabled="!formValid || submitting"
-            class="px-6 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm">
+            class="px-6 py-2 text-sm font-semibold rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm">
             {{ submitting ? 'Creating bill…' : 'Create Bill in QuickBooks' }}
           </button>
         </div>

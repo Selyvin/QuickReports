@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
+import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
 
@@ -131,55 +132,11 @@ async function signOut() {
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="border-b border-gray-200 bg-white px-6 py-4">
-      <div class="mx-auto max-w-7xl flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600">
-            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </div>
-          <div>
-            <h1 class="text-lg font-semibold text-gray-900">QuickReports</h1>
-            <p class="text-xs text-gray-500">QuickBooks Financial Dashboard</p>
-          </div>
-          <nav class="ml-6 flex items-center gap-1">
-            <router-link to="/"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Dashboard
-            </router-link>
-            <router-link to="/reports"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Reports
-            </router-link>
-            <router-link to="/estimates"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Estimates
-            </router-link>
-            <router-link to="/wages"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Wages
-            </router-link>
-            <router-link to="/invoice-payments"
-              class="rounded-md px-3 py-1.5 text-sm font-medium bg-indigo-50 text-indigo-700 transition">
-              Invoice Payments
-            </router-link>
-            <router-link to="/create-bill"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Create Bill
-            </router-link>
-            <router-link to="/company"
-              class="rounded-md px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition">
-              Company
-            </router-link>
-          </nav>
-        </div>
-        <button class="text-sm text-gray-400 hover:text-gray-600 transition" @click="signOut">
-          Sign out
-        </button>
-      </div>
-    </header>
+    <AppHeader>
+      <button class="text-sm text-gray-400 hover:text-gray-600 transition" @click="signOut">
+        Sign out
+      </button>
+    </AppHeader>
 
     <!-- Content -->
     <div class="mx-auto max-w-7xl px-6 py-6 space-y-4">
@@ -188,11 +145,11 @@ async function signOut() {
       <div class="bg-white border border-gray-200 rounded-lg px-5 py-4 flex flex-wrap items-end gap-4">
         <div class="flex flex-col gap-1">
           <label class="text-xs font-medium text-gray-500">Start Date</label>
-          <input v-model="startDate" type="date" class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <input v-model="startDate" type="date" class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
         <div class="flex flex-col gap-1">
           <label class="text-xs font-medium text-gray-500">End Date</label>
-          <input v-model="endDate" type="date" class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <input v-model="endDate" type="date" class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
         </div>
         <div class="flex flex-col gap-1">
           <label class="text-xs font-medium text-gray-500">Quick Select</label>
@@ -207,7 +164,7 @@ async function signOut() {
         <button
           @click="fetchReport"
           :disabled="loading"
-          class="px-4 py-1.5 text-sm font-medium rounded-md bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition">
+          class="px-4 py-1.5 text-sm font-medium rounded-md bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 transition">
           {{ loading ? 'Loading...' : 'Run Report' }}
         </button>
         <button
